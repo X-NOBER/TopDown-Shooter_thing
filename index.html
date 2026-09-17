@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top-Down Shooter</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="game-root">
+      <aside id="hud" aria-live="polite">
+        <h1>Top-Down Shooter</h1>
+        <p class="hint">WASD to move · mouse to aim · 1 / 2 to switch weapons</p>
+        <dl>
+          <div>
+            <dt>Weapon</dt>
+            <dd id="hud-weapon">Loading…</dd>
+          </div>
+          <div>
+            <dt>Type</dt>
+            <dd id="hud-type">—</dd>
+          </div>
+          <div>
+            <dt>Damage</dt>
+            <dd id="hud-damage">—</dd>
+          </div>
+          <div>
+            <dt>Catalog</dt>
+            <dd id="hud-source">—</dd>
+          </div>
+        </dl>
+      </aside>
+      <div id="canvas-holder"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

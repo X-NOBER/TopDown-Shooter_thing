@@ -1,0 +1,77 @@
+import { GAME } from "./config.js";
+import { Player } from "./entities/Player.js";
+import { Weapon } from "./entities/Weapon.js";
+import { preloadSprites } from "./visuals/appearance.js";
+
+export class Game {
+  /**
+   * @param {import("p5")} p
+   * @param {import("./data/localWeapons.js").WeaponRecord[]} weapons
+   * @param {"supabase" | "local"} source
+   */
+  constructor(p, weapons, source) {
+    this.p = p;
+    this.weapons = weapons;
+    this.source = source;
+    this.equippedIndex = 0;
+
+    this.player = new Player({
+      x: GAME.canvasWidth / 2,
+      y: GAME.canvasHeight / 2,
+    });
+    this.weapon = new Weapon(weapons[0]);
+
+    this.hud = {
+      name: document.getElementById("hud-weapon"),
+      type: document.getElementById("hud-type"),
+      damage: document.getElementById("hud-damage"),
+      source: document.getElementById("hud-source"),
+    };
+
+    this.syncHud();
+  }
+
+  async loadVisuals() {
+    await preloadSprites(this.p, [this.player, this.weapon]);
+  }
+
+  syncHud() {
+    const current = this.weapon.record;
+    if (this.hud.name) this.hud.name.textContent = current.name;
+    if (this.hud.type) this.hud.type.textContent = current.weapon_type;
+    if (this.hud.damage) this.hud.damage.textContent = String(current.base_damage);
+    if (this.hud.source) this.hud.source.textContent = this.source;
+  }
+
+  /** @param {number} index */
+  async equipByIndex(index) {
+    if (index < 0 || index >= this.weapons.length) return;
+    this.equippedIndex = index;
+    this.weapon.equip(this.weapons[index]);
+    await preloadSprites(this.p, [this.weapon]);
+    this.syncHud();
+  }
+
+  keyPressed() {
+    if (this.p.key === "1") this.equipByIndex(0);
+    if (this.p.key === "2") this.equipByIndex(1);
+  }
+
+  update() {
+    this.player.update(this.p, {
+      width: GAME.canvasWidth,
+      height: GAME.canvasHeight,
+    });
+  }
+
+  draw() {
+    const p = this.p;
+    p.background(GAME.background);
+    p.noStroke();
+    p.fill(GAME.floor);
+    p.rect(24, 24, GAME.canvasWidth - 48, GAME.canvasHeight - 48, 16);
+
+    this.weapon.draw(p, this.player);
+    this.player.draw(p);
+  }
+}
