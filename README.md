@@ -14,7 +14,11 @@ Then open `http://localhost:8080`.
 
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)
+- **Click or hold** — shoot
 - **1 / 2** — switch between catalog weapons
+- **R** — reload to that gun’s `max_ammo`
+
+Ammo is **unlimited** while `COMBAT.unlimitedAmmo` is `true` in `js/config.js`. Each weapon still stores its own `max_ammo` and `ammo_type` (Starter Pistol: 12 light, Scatter Shot: 6 shell). Set the flag to `false` when magazines should run dry.
 
 The player is a circle and each gun is a rectangle until sprites exist.
 

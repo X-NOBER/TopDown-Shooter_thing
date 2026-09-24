@@ -6,7 +6,7 @@ import {
 import { LOCAL_WEAPONS } from "./localWeapons.js";
 
 const WEAPON_COLUMNS =
-  "id, name, description, weapon_type, base_damage, icon_url, unlock_cost";
+  "id, name, description, weapon_type, base_damage, icon_url, unlock_cost, ammo_type, max_ammo";
 
 function normalizeWeapon(row) {
   return {
@@ -17,6 +17,8 @@ function normalizeWeapon(row) {
     base_damage: Number(row.base_damage),
     icon_url: row.icon_url ?? null,
     unlock_cost: row.unlock_cost == null ? 0 : Number(row.unlock_cost),
+    ammo_type: row.ammo_type ?? "generic",
+    max_ammo: row.max_ammo == null ? 0 : Number(row.max_ammo),
   };
 }
 

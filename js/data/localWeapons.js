@@ -10,6 +10,8 @@
  * @property {number} base_damage
  * @property {string|null} icon_url
  * @property {number|null} unlock_cost
+ * @property {string} ammo_type
+ * @property {number} max_ammo
  */
 
 /** @type {WeaponRecord[]} */
@@ -22,6 +24,8 @@ export const LOCAL_WEAPONS = [
     base_damage: 12,
     icon_url: null,
     unlock_cost: 0,
+    ammo_type: "light",
+    max_ammo: 12,
   },
   {
     id: "bf958d01-a538-4f89-94e5-727a099455b0",
@@ -31,5 +35,7 @@ export const LOCAL_WEAPONS = [
     base_damage: 28,
     icon_url: null,
     unlock_cost: 500,
+    ammo_type: "shell",
+    max_ammo: 6,
   },
 ];

@@ -110,6 +110,14 @@ export function drawPlayerVisual(p, visual) {
   p.circle(0, 0, visual.radius * 2);
 }
 
+/** Distance from the player center to the muzzle, in pixels. */
+export function muzzleDistance(visual, ownerRadius) {
+  if (visual.kind === "sprite") {
+    return ownerRadius + visual.width / 2;
+  }
+  return ownerRadius - visual.gripInset + visual.length;
+}
+
 export function drawWeaponVisual(p, visual, ownerRadius) {
   if (visual.kind === "sprite" && visual.image) {
     p.imageMode(p.CENTER);
