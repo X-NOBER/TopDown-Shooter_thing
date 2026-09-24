@@ -5,8 +5,8 @@ import { Player } from "./entities/Player.js";
 import { Projectile } from "./entities/Projectile.js";
 import { Weapon } from "./entities/Weapon.js";
 import { preloadSprites } from "./visuals/appearance.js";
-import { circlesOverlap, resolveCircle } from "./world/collision.js";
-import { hasLineOfSight } from "./world/raycast.js";
+import { resolveCircle } from "./world/collision.js";
+import { segmentCircleT, segmentRectT } from "./world/raycast.js";
 import { WALLS, drawWalls } from "./world/walls.js";
 
 export class Game {
@@ -161,14 +161,6 @@ export class Game {
 
     for (const projectile of this.projectiles) {
       projectile.update(this.p);
-      const blocked = !hasLineOfSight(
-        projectile.prevX,
-        projectile.prevY,
-        projectile.x,
-        projectile.y,
-        WALLS
-      );
-      if (blocked) projectile.alive = false;
     }
 
     this.resolveHits();
@@ -182,18 +174,69 @@ export class Game {
     for (const projectile of this.projectiles) {
       if (!projectile.alive) continue;
 
+      let bestT = Infinity;
+      let hitWall = false;
+      /** @type {Enemy | null} */
+      let hitEnemy = null;
+      let hitPlayer = false;
+
+      for (const wall of WALLS) {
+        const t = segmentRectT(
+          projectile.prevX,
+          projectile.prevY,
+          projectile.x,
+          projectile.y,
+          wall
+        );
+        if (t != null && t < bestT) {
+          bestT = t;
+          hitWall = true;
+          hitEnemy = null;
+          hitPlayer = false;
+        }
+      }
+
       if (projectile.team === "player") {
         for (const enemy of this.enemies) {
           if (!enemy.alive) continue;
-          if (!circlesOverlap(projectile, enemy)) continue;
-          enemy.takeDamage(projectile.damage);
-          projectile.alive = false;
-          break;
+          const t = segmentCircleT(
+            projectile.prevX,
+            projectile.prevY,
+            projectile.x,
+            projectile.y,
+            enemy.x,
+            enemy.y,
+            enemy.radius + projectile.radius
+          );
+          if (t != null && t < bestT) {
+            bestT = t;
+            hitEnemy = enemy;
+            hitWall = false;
+            hitPlayer = false;
+          }
         }
-        continue;
+      } else {
+        const t = segmentCircleT(
+          projectile.prevX,
+          projectile.prevY,
+          projectile.x,
+          projectile.y,
+          this.player.x,
+          this.player.y,
+          this.player.radius + projectile.radius
+        );
+        if (t != null && t < bestT) {
+          bestT = t;
+          hitPlayer = true;
+          hitWall = false;
+          hitEnemy = null;
+        }
       }
 
-      if (circlesOverlap(projectile, this.player)) {
+      if (hitEnemy) {
+        hitEnemy.takeDamage(projectile.damage);
+        projectile.alive = false;
+      } else if (hitWall || hitPlayer) {
         projectile.alive = false;
       }
     }
