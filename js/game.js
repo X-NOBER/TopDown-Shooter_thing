@@ -1,8 +1,13 @@
 import { GAME } from "./config.js";
+import { ENEMY_SPAWNS } from "./data/enemySpawns.js";
+import { Enemy } from "./entities/Enemy.js";
 import { Player } from "./entities/Player.js";
 import { Projectile } from "./entities/Projectile.js";
 import { Weapon } from "./entities/Weapon.js";
 import { preloadSprites } from "./visuals/appearance.js";
+import { circlesOverlap, resolveCircle } from "./world/collision.js";
+import { hasLineOfSight } from "./world/raycast.js";
+import { WALLS, drawWalls } from "./world/walls.js";
 
 export class Game {
   /**
@@ -21,6 +26,18 @@ export class Game {
       y: GAME.canvasHeight / 2,
     });
     this.weapon = new Weapon(weapons[0]);
+    /** @type {Enemy[]} */
+    this.enemies = ENEMY_SPAWNS.map((spawn) => {
+      const weaponRecord =
+        weapons.find((weapon) => weapon.weapon_type === spawn.weaponType) ?? weapons[0];
+      return new Enemy({
+        x: spawn.x,
+        y: spawn.y,
+        maxHealth: spawn.maxHealth,
+        weaponRecord,
+        fill: spawn.fill,
+      });
+    });
     /** @type {Projectile[]} */
     this.projectiles = [];
 
@@ -37,7 +54,11 @@ export class Game {
   }
 
   async loadVisuals() {
-    await preloadSprites(this.p, [this.player, this.weapon]);
+    const visuals = [this.player, this.weapon];
+    for (const enemy of this.enemies) {
+      visuals.push(enemy, enemy.weapon);
+    }
+    await preloadSprites(this.p, visuals);
   }
 
   syncHud() {
@@ -75,14 +96,16 @@ export class Game {
     return p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height;
   }
 
-  tryShoot() {
-    if (!this.pointerInsideCanvas()) return;
-    const shots = this.weapon.tryFire(this.p.millis());
-    if (!shots) return;
-
+  /**
+   * @param {{ x: number, y: number, aimAngle: number, radius: number }} actor
+   * @param {Weapon} weapon
+   * @param {Array<{ angleOffset: number, speed: number, radius: number, lifeMs: number, damage: number, fill: number[] }>} shots
+   * @param {"player" | "enemy"} team
+   */
+  spawnShots(actor, weapon, shots, team) {
     for (const shot of shots) {
-      const angle = this.player.aimAngle + shot.angleOffset;
-      const origin = this.weapon.muzzlePoint(this.player, angle);
+      const angle = actor.aimAngle + shot.angleOffset;
+      const origin = weapon.muzzlePoint(actor, angle);
       this.projectiles.push(
         new Projectile({
           x: origin.x,
@@ -92,10 +115,18 @@ export class Game {
           radius: shot.radius,
           lifeMs: shot.lifeMs,
           damage: shot.damage,
-          fill: shot.fill,
+          fill: team === "enemy" ? [255, 96, 96] : shot.fill,
+          team,
         })
       );
     }
+  }
+
+  tryShoot() {
+    if (!this.pointerInsideCanvas()) return;
+    const shots = this.weapon.tryFire(this.p.millis());
+    if (!shots) return;
+    this.spawnShots(this.player, this.weapon, shots, "player");
     this.syncHud();
   }
 
@@ -105,17 +136,67 @@ export class Game {
       height: GAME.canvasHeight,
     };
     this.player.update(this.p, bounds);
+    const playerResolved = resolveCircle(
+      this.player.x,
+      this.player.y,
+      this.player.radius,
+      WALLS
+    );
+    this.player.x = playerResolved.x;
+    this.player.y = playerResolved.y;
 
     if (this.p.mouseIsPressed) {
       this.tryShoot();
     }
 
+    const now = this.p.millis();
+    for (const enemy of this.enemies) {
+      enemy.update(this.p, this.player, WALLS);
+      const moved = resolveCircle(enemy.x, enemy.y, enemy.radius, WALLS);
+      enemy.x = moved.x;
+      enemy.y = moved.y;
+      const shots = enemy.tryShoot(now);
+      if (shots) this.spawnShots(enemy, enemy.weapon, shots, "enemy");
+    }
+
     for (const projectile of this.projectiles) {
       projectile.update(this.p);
+      const blocked = !hasLineOfSight(
+        projectile.prevX,
+        projectile.prevY,
+        projectile.x,
+        projectile.y,
+        WALLS
+      );
+      if (blocked) projectile.alive = false;
     }
-    this.projectiles = this.projectiles.filter((projectile) =>
-      projectile.isAlive(this.p, bounds)
+
+    this.resolveHits();
+    this.projectiles = this.projectiles.filter(
+      (projectile) => projectile.alive && projectile.isAlive(this.p, bounds)
     );
+    this.enemies = this.enemies.filter((enemy) => enemy.alive);
+  }
+
+  resolveHits() {
+    for (const projectile of this.projectiles) {
+      if (!projectile.alive) continue;
+
+      if (projectile.team === "player") {
+        for (const enemy of this.enemies) {
+          if (!enemy.alive) continue;
+          if (!circlesOverlap(projectile, enemy)) continue;
+          enemy.takeDamage(projectile.damage);
+          projectile.alive = false;
+          break;
+        }
+        continue;
+      }
+
+      if (circlesOverlap(projectile, this.player)) {
+        projectile.alive = false;
+      }
+    }
   }
 
   draw() {
@@ -124,9 +205,13 @@ export class Game {
     p.noStroke();
     p.fill(GAME.floor);
     p.rect(24, 24, GAME.canvasWidth - 48, GAME.canvasHeight - 48, 16);
+    drawWalls(p);
 
     for (const projectile of this.projectiles) {
       projectile.draw(p);
+    }
+    for (const enemy of this.enemies) {
+      enemy.draw(p);
     }
     this.weapon.draw(p, this.player);
     this.player.draw(p);

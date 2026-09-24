@@ -7,23 +7,30 @@ export class Projectile {
    * @param {number} options.speed
    * @param {number} options.radius
    * @param {number} options.lifeMs
-   * @param {number} options.damage
-   * @param {number[]} options.fill
-   */
-  constructor({ x, y, angle, speed, radius, lifeMs, damage, fill }) {
+ * @param {number} options.damage
+ * @param {number[]} options.fill
+ * @param {"player" | "enemy"} options.team
+ */
+  constructor({ x, y, angle, speed, radius, lifeMs, damage, fill, team }) {
     this.x = x;
     this.y = y;
+    this.prevX = x;
+    this.prevY = y;
     this.angle = angle;
     this.speed = speed;
     this.radius = radius;
     this.lifeMs = lifeMs;
     this.damage = damage;
     this.fill = fill;
+    this.team = team;
     this.age = 0;
+    this.alive = true;
   }
 
   /** @param {import("p5")} p */
   update(p) {
+    this.prevX = this.x;
+    this.prevY = this.y;
     const dt = p.deltaTime / 1000;
     this.x += Math.cos(this.angle) * this.speed * dt;
     this.y += Math.sin(this.angle) * this.speed * dt;

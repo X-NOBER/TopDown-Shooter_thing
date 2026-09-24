@@ -22,13 +22,17 @@ Ammo is **unlimited** while `COMBAT.unlimitedAmmo` is `true` in `js/config.js`. 
 
 The player is a circle and each gun is a rectangle until sprites exist.
 
+Enemies are circles with their own guns. A raycast from each enemy to you is blocked by walls, so they only aim and shoot while that ray is clear. Their health bar is a black track; the fill shrinks and shifts from green to red as they take damage. Spawns live in `js/data/enemySpawns.js`.
+
 ## Layout
 
 | Path | Role |
 |------|------|
 | `js/main.js` | p5 sketch bootstrap |
 | `js/game.js` | loop, input, HUD |
-| `js/entities/` | movement and aiming only |
+| `js/entities/` | player, enemies, weapons, projectiles, health bars |
+| `js/world/` | walls, raycast line of sight, collision |
+| `js/data/enemySpawns.js` | enemy placements, health, and starting gun type |
 | `js/visuals/appearance.js` | circle / rect **or** sprite from `icon_url` |
 | `js/data/weaponRepository.js` | loads `public.weapons` from Supabase, local fallback |
 | `js/data/localWeapons.js` | same shape as the `weapons` table |
