@@ -4,10 +4,13 @@ import { useEffect, useRef } from "react";
 
 const STATS = [
   ["Weapon", "hud-weapon", "Loading…"],
+  ["Slot", "hud-slot", "—"],
+  ["Rarity", "hud-rarity", "—"],
   ["Type", "hud-type", "—"],
   ["Damage", "hud-damage", "—"],
   ["Ammo", "hud-ammo", "—"],
   ["Ammo type", "hud-ammo-type", "—"],
+  ["Through walls", "hud-wall", "—"],
   ["Catalog", "hud-source", "—"],
 ];
 
@@ -46,7 +49,7 @@ export default function GameScreen() {
       >
         <h1 className="mb-2 text-lg font-semibold">Top-Down Shooter</h1>
         <p className="mb-5 text-sm leading-snug text-[#93a0b5]">
-          WASD to move · mouse to aim · click or hold to shoot · 1 / 2 to switch · R to reload · walls block sight
+          WASD to move · mouse to aim · click to use · 1 primary · 2 sidearm · 3 knife · 4–8 utilities · R reload. Press 1 again to swap primaries. Shots can stick inside a wall.
         </p>
         <dl className="grid gap-3">
           {STATS.map(([label, id, fallback]) => (
