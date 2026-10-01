@@ -49,7 +49,7 @@ export default function GameScreen() {
       >
         <h1 className="mb-2 text-lg font-semibold">Top-Down Shooter</h1>
         <p className="mb-5 text-sm leading-snug text-[#93a0b5]">
-          WASD to move · mouse to aim · click to use · 1 primary · 2 sidearm · 3 knife · 4–8 utilities · R reload. Press 1 again to swap primaries. Shots can stick inside a wall.
+          WASD to move · mouse to aim · click to use · 1 cycles primaries · 2 pistols · 3 knives · 4–8 grenades · R reload. Shots can stick inside a wall.
         </p>
         <dl className="grid gap-3">
           {STATS.map(([label, id, fallback]) => (

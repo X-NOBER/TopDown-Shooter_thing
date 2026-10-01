@@ -26,7 +26,14 @@ The player is a circle and each gun is a rectangle until sprites exist.
 
 Enemies are circles with their own guns. A raycast from each enemy to you is blocked by walls, so they only aim and shoot while that ray is clear. Bullets can still travel through a wall until that gun’s `wall_penetration` budget runs out. Each exit cuts damage by `wall_damage_reduction` and speed by `wall_slowdown`. Their health bar is a black track; the fill shrinks and shifts from green to red as they take damage. Spawns live in `lib/game/data/enemySpawns.js`.
 
-The loadout is one primary, one secondary, one melee, and up to five utilities. Press **1** again to swap if you own more than one primary. Grenades, flashbangs, smoke, incendiaries, and impact grenades all damage enemies in their blast, and walls block that blast.
+The loadout you can use in game:
+
+- **1** cycles primaries: AK-47, M4A1, Pump Shotgun, Double Barrel
+- **2** cycles sidearms: USP, then Deagle
+- **3** cycles knives: Tanto (long thin rectangle), then Cleaver (short wide rectangle)
+- **4–8** are the five grenades: smoke, flashbang, frag, incendiary, impact
+
+Hold the mouse to fire the auto rifles. Each gun still uses its own Supabase damage, magazine, rarity, and wall-penetration stats.
 
 ## Layout
 
