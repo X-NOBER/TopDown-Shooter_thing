@@ -1,5 +1,5 @@
-import GameScreen from "../components/GameScreen";
+import ShooterApp from "../components/ShooterApp";
 
 export default function HomePage() {
-  return <GameScreen />;
+  return <ShooterApp />;
 }
