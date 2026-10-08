@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import P5Stage from "./P5Stage";
 
 const STATS = [
   ["Weapon", "hud-weapon", "Loading…"],
@@ -14,32 +14,7 @@ const STATS = [
   ["Catalog", "hud-source", "—"],
 ];
 
-export default function GameScreen() {
-  const holderRef = useRef(null);
-
-  useEffect(() => {
-    const holder = holderRef.current;
-    if (!holder) return undefined;
-
-    let cancelled = false;
-    let instance = null;
-
-    (async () => {
-      const p5Module = await import("p5");
-      const p5 = p5Module.default;
-      const { loadWeaponCatalog } = await import("../lib/game/data/weaponRepository.js");
-      const { createSketch } = await import("../lib/game/sketch.js");
-      const catalog = await loadWeaponCatalog();
-      if (cancelled || !holder.isConnected) return;
-      instance = new p5(createSketch(catalog), holder);
-    })();
-
-    return () => {
-      cancelled = true;
-      if (instance) instance.remove();
-    };
-  }, []);
-
+export default function GameScreen({ catalog, loadout }) {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-[minmax(220px,280px)_1fr]">
       <aside
@@ -64,9 +39,10 @@ export default function GameScreen() {
       </aside>
       <div
         id="canvas-holder"
-        ref={holderRef}
         className="flex min-h-[70vh] items-center justify-center bg-[radial-gradient(circle_at_50%_45%,#152033_0%,#0b0f14_70%)] p-3 md:min-h-screen md:p-0 [&_canvas]:block [&_canvas]:rounded-lg [&_canvas]:border [&_canvas]:border-[#243044]"
-      />
+      >
+        <P5Stage catalog={catalog} mode="match" loadout={loadout} />
+      </div>
     </div>
   );
 }
