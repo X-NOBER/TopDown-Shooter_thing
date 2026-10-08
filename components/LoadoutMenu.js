@@ -104,7 +104,7 @@ export default function LoadoutMenu({ catalog, onReady }) {
           className="mx-auto border border-black [&_canvas]:block"
         />
         <p className="mt-3 text-center text-sm text-neutral-600">
-          WASD to move, mouse to aim, click to shoot. The number above a dummy is the damage that hit dealt. The orange dummy sits behind the wall, so its number is what is left after the shot goes through.
+          WASD to move, mouse to aim, click to shoot. Guns cannot poke through walls. Grenades land on the cursor if it is close, or stop at max throw range if it is far. Smoke hides vision, flash blinds, frag blasts, incendiary leaves fire that ticks harder the longer you stand in it. The orange dummy sits behind the wall, so its number is what is left after a shot goes through.
         </p>
       </div>
     </div>
