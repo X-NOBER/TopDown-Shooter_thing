@@ -107,7 +107,7 @@ export default function LoadoutMenu({ catalog, onReady }) {
           className="mx-auto border border-black [&_canvas]:block"
         />
         <p className="mt-3 text-center text-sm text-neutral-600">
-          WASD to move, mouse to aim, click to shoot. Guns cannot poke through walls. Grenades land on the cursor if it is close, or stop at max throw range if it is far. Smoke hides vision, flash blinds, frag blasts, incendiary leaves fire that ticks harder the longer you stand in it. The orange dummy sits behind the wall, so its number is what is left after a shot goes through.
+          WASD to move, mouse to aim, click to shoot. G drops the held gun (it stays on the floor until you pick it up). Walk near it and press E. Guns cannot poke through walls. Grenades land on the cursor if it is close, or stop at max throw range if it is far. Smoke hides vision, flash blinds, frag blasts, incendiary leaves fire that ticks harder the longer you stand in it. The orange dummy sits behind the wall, so its number is what is left after a shot goes through.
         </p>
       </div>
     </div>
