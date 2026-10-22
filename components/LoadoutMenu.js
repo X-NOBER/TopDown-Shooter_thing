@@ -18,6 +18,7 @@ export default function LoadoutMenu({ catalog, onReady }) {
   const [secondaryId, setSecondaryId] = useState(options.secondary[0]?.id ?? null);
   const [meleeId, setMeleeId] = useState(options.melee[0]?.id ?? null);
   const [utilityIds, setUtilityIds] = useState(options.utility.map((weapon) => weapon.id));
+  const [heldId, setHeldId] = useState(options.primary[0]?.id ?? null);
 
   const loadout = useMemo(() => {
     return {
@@ -41,6 +42,7 @@ export default function LoadoutMenu({ catalog, onReady }) {
         return [...current, id];
       });
     }
+    if (slot !== "utility" || !utilityIds.includes(id)) setHeldId(id);
   }
 
   function selected(slot, id) {
@@ -100,6 +102,7 @@ export default function LoadoutMenu({ catalog, onReady }) {
           catalog={catalog}
           mode="range"
           loadout={loadout}
+          heldId={heldId}
           bounds={RANGE_BOUNDS}
           className="mx-auto border border-black [&_canvas]:block"
         />
