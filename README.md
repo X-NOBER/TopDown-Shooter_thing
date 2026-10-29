@@ -12,6 +12,24 @@ python3 -m http.server 8080
 
 Then open `http://localhost:8080`.
 
+## Colyseus (JavaScript)
+
+Multiplayer uses the official [Colyseus](https://github.com/colyseus/colyseus) JavaScript ESM server and the [`@colyseus/sdk`](https://github.com/colyseus/colyseus/tree/master/packages/sdk) browser client.
+
+```bash
+cd server
+npm install
+npm start
+```
+
+Or from the repo root: `npm start`.
+
+- Server / playground: `http://localhost:2567`
+- Monitor: `http://localhost:2567/monitor`
+- Game served by Colyseus: `http://localhost:2567/game/`
+
+The p5 client loads `js/vendor/colyseus.js` and joins room `my_room`. If the server is down, the shooter still runs locally and the HUD shows offline.
+
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)
 - **Click or hold** — shoot
@@ -36,7 +54,10 @@ Enemies are circles with their own guns. A raycast from each enemy to you is blo
 | `js/visuals/appearance.js` | circle / rect **or** sprite from `icon_url` |
 | `js/data/weaponRepository.js` | loads `public.weapons` from Supabase, local fallback |
 | `js/data/localWeapons.js` | same shape as the `weapons` table |
-| `js/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys |
+| `js/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys, Colyseus URL |
+| `js/net/colyseusClient.js` | joins the Colyseus room from the browser |
+| `js/vendor/colyseus.js` | `@colyseus/sdk` browser build |
+| `server/` | official Colyseus JavaScript ESM server (`create-colyseus-app --esm`) |
 
 Gameplay records match the Supabase `weapons` columns (`id`, `name`, `weapon_type`, `base_damage`, `icon_url`, …). Extra look-and-feel (barrel size, colors) lives in `WEAPON_VISUALS_BY_TYPE` until you add columns or sprites.
 

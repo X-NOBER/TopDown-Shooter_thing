@@ -1,7 +1,9 @@
 import { GAME } from "./config.js";
 import { loadWeaponCatalog } from "./data/weaponRepository.js";
 import { Game } from "./game.js";
+import { connectToGameRoom } from "./net/colyseusClient.js";
 
+connectToGameRoom();
 const catalog = await loadWeaponCatalog();
 
 new p5((p) => {

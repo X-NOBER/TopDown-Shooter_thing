@@ -13,6 +13,15 @@ export const GAME = {
   floor: [20, 32, 48],
 };
 
+/**
+ * Colyseus multiplayer server (JavaScript ESM). Default port from the official
+ * create-colyseus-app scaffold in /server.
+ */
+export const COLYSEUS = {
+  url: "http://localhost:2567",
+  room: "my_room",
+};
+
 export const PLAYER = {
   radius: 22,
   speed: 260,

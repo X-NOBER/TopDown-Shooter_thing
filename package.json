@@ -1,0 +1,10 @@
+{
+  "name": "topdown-shooter",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix server",
+    "server": "npm start --prefix server",
+    "game": "python3 -m http.server 8080",
+    "test": "npm test --prefix server"
+  }
+}
