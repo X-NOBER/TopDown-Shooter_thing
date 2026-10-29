@@ -4,9 +4,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "server": "npm start --prefix server"
   },
   "dependencies": {
+    "@colyseus/sdk": "^0.18.8",
     "@supabase/supabase-js": "^2.117.2",
     "next": "^15.5.27",
     "p5": "^1.11.3",

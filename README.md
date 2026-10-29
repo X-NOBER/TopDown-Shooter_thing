@@ -11,6 +11,19 @@ npm run dev
 
 Then open `http://localhost:3000`.
 
+## Colyseus (JavaScript)
+
+The Next.js app talks to an official [Colyseus](https://github.com/colyseus/colyseus) JavaScript ESM server (`create-colyseus-app --esm`) via [`@colyseus/sdk`](https://github.com/colyseus/colyseus/tree/master/packages/sdk).
+
+```bash
+npm run server
+```
+
+- Playground: `http://localhost:2567`
+- Monitor: `http://localhost:2567/monitor`
+
+The loadout HUD and match HUD show `connected · sessionId`. If the server is down, the shooter still runs locally.
+
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)
 - **Click or hold** — shoot
@@ -49,7 +62,9 @@ Hold the mouse to fire the auto rifles. Each gun still uses its own Supabase dam
 | `lib/game/visuals/appearance.js` | circle / rect **or** sprite from `icon_url` |
 | `lib/game/data/weaponRepository.js` | loads `public.weapons` from Supabase, local fallback |
 | `lib/game/data/localWeapons.js` | same shape as the `weapons` table |
-| `lib/game/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys |
+| `lib/game/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys, Colyseus URL |
+| `lib/game/net/colyseusClient.js` | joins `my_room` from the Next.js client |
+| `server/` | Colyseus JavaScript ESM multiplayer server |
 
 Gameplay records match the Supabase `weapons` columns (`id`, `name`, `weapon_type`, `base_damage`, `icon_url`, …). Extra look-and-feel (barrel size, colors) lives in `WEAPON_VISUALS_BY_TYPE` until you add columns or sprites.
 

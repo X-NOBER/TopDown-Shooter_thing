@@ -1,5 +1,6 @@
 "use client";
 
+import ColyseusStatus from "./ColyseusStatus";
 import P5Stage from "./P5Stage";
 
 const STATS = [
@@ -14,7 +15,7 @@ const STATS = [
   ["Catalog", "hud-source", "—"],
 ];
 
-export default function GameScreen({ catalog, loadout }) {
+export default function GameScreen({ catalog, loadout, colyseusLabel = "—" }) {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-[minmax(220px,280px)_1fr]">
       <aside
@@ -36,6 +37,9 @@ export default function GameScreen({ catalog, loadout }) {
             </div>
           ))}
         </dl>
+        <div className="mt-5 border-t border-[#243044] pt-3">
+          <ColyseusStatus label={colyseusLabel} />
+        </div>
       </aside>
       <div
         id="canvas-holder"
