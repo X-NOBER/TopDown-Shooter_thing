@@ -2,7 +2,7 @@
   "name": "topdown-shooter",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0 --port 3900",
     "build": "next build",
     "start": "next start",
     "server": "npm start --prefix server"
