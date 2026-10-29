@@ -28,13 +28,26 @@ function normalizeWeapon(row) {
  *
  * @returns {Promise<{ weapons: import("./localWeapons.js").WeaponRecord[], source: "supabase" | "local", error: string | null }>}
  */
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    }),
+  ]);
+}
+
 export async function loadWeaponCatalog() {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    const { data, error } = await supabase
-      .from("weapons")
-      .select(WEAPON_COLUMNS)
-      .order("unlock_cost", { ascending: true });
+    const { data, error } = await withTimeout(
+      supabase
+        .from("weapons")
+        .select(WEAPON_COLUMNS)
+        .order("unlock_cost", { ascending: true }),
+      4000,
+      "Supabase weapons"
+    );
 
     if (error) {
       throw error;
