@@ -1,0 +1,47 @@
+# Render Blueprint: Next.js game + Colyseus multiplayer (two Web Services).
+# Dashboard → Blueprints → New Blueprint Instance → connect this repo → Deploy.
+# Repo: https://github.com/X-NOBER/TopDown-Shooter_thing
+
+version: "1"
+
+services:
+  # Deploy Colyseus first so the game build can read its public URL.
+  - type: web
+    name: topdown-shooter-colyseus
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /hi
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: NODE_ENV
+        value: production
+      # Optional: tighten CORS after both services exist (also allows *.onrender.com by default).
+      - key: CORS_ORIGIN
+        fromService:
+          type: web
+          name: topdown-shooter-web
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: web
+    name: topdown-shooter-web
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22.12.0"
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_COLYSEUS_URL
+        fromService:
+          type: web
+          name: topdown-shooter-colyseus
+          envVarKey: RENDER_EXTERNAL_URL

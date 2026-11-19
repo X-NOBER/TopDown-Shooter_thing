@@ -26,6 +26,23 @@ npm run server
 
 The loadout HUD shows `online · lobby`. After Ready it shows waiting/fight. If the server is down, Ready will fail instead of starting a local match.
 
+### Deploy on Render
+
+Production uses **two Web Services** (see [`render.yaml`](render.yaml)):
+
+| Service | Role | Health check |
+|---------|------|----------------|
+| `topdown-shooter-web` | Next.js game | `/` |
+| `topdown-shooter-colyseus` | Colyseus + WebSockets | `/hi` |
+
+1. Push this repo to GitHub.
+2. [Render Dashboard](https://dashboard.render.com/) → **Blueprints** → **New Blueprint Instance**.
+3. Connect **TopDown-Shooter_thing** and pick branch `cursor/colyseus-nextjs-4590` (or `main` after merge).
+4. **Apply** / **Deploy**. Render creates both services and sets `NEXT_PUBLIC_COLYSEUS_URL` on the game from the Colyseus public URL.
+5. Open the **topdown-shooter-web** URL. Multiplayer needs **both** services healthy (free tier may sleep ~50s on first request).
+
+Local overrides: copy [`.env.example`](.env.example) to `.env.local` and set `NEXT_PUBLIC_COLYSEUS_URL=http://localhost:2567` if needed.
+
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)
 - **Click or hold** — shoot

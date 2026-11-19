@@ -9,7 +9,8 @@
     "node": ">= 22.0.0"
   },
   "scripts": {
-    "start": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
     "loadtest": "node loadtest/example.js --room my_room --numClients 2",
     "test": "mocha test/**.test.js --exit --timeout 15000",
     "build": "exit 0"

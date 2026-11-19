@@ -11,6 +11,7 @@ import {
  * Import your Room files
  */
 import { ArenaRoom } from "./rooms/ArenaRoom.js";
+import { installCors } from "./cors.js";
 
 const server = defineServer({
 
@@ -40,6 +41,7 @@ const server = defineServer({
    * Read more: https://expressjs.com/en/starter/basic-routing.html
    */
   express: (app) => {
+    installCors(app);
 
     app.get("/hi", (req, res) => {
       res.send("It's time to kick ass and chew bubblegum!");
