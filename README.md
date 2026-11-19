@@ -9,7 +9,39 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
+Then open `http://localhost:3900`.
+
+## Colyseus (JavaScript)
+
+The Next.js app talks to an official [Colyseus](https://github.com/colyseus/colyseus) JavaScript ESM server (`create-colyseus-app --esm`) via [`@colyseus/sdk`](https://github.com/colyseus/colyseus/tree/master/packages/sdk).
+
+```bash
+npm run server
+```
+
+- Playground: `http://localhost:2567`
+- Monitor: `http://localhost:2567/monitor`
+
+**2–6 players:** pick a loadout in the lobby (PlayGround is practice only). **Ready** queues you into a waiting room (up to 6 in one match). The fight starts once **at least 2** are in; more can join the **same arena** until the room is full. Die and you **respawn** on your side.
+
+The loadout HUD shows `online · lobby`. After Ready it shows waiting/fight. If the server is down, Ready will fail instead of starting a local match.
+
+### Deploy on Render
+
+Production uses **two Web Services** (see [`render.yaml`](render.yaml)):
+
+| Service | Role | Health check |
+|---------|------|----------------|
+| `topdown-shooter-web` | Next.js game | `/` |
+| `topdown-shooter-colyseus` | Colyseus + WebSockets | `/hi` |
+
+1. Push this repo to GitHub.
+2. [Render Dashboard](https://dashboard.render.com/) → **Blueprints** → **New Blueprint Instance**.
+3. Connect **TopDown-Shooter_thing** and pick branch `cursor/colyseus-nextjs-4590` (or `main` after merge).
+4. **Apply** / **Deploy**. Render creates both services and sets `NEXT_PUBLIC_COLYSEUS_URL` on the game from the Colyseus public URL.
+5. Open the **topdown-shooter-web** URL. Multiplayer needs **both** services healthy (free tier may sleep ~50s on first request).
+
+Local overrides: copy [`.env.example`](.env.example) to `.env.local` and set `NEXT_PUBLIC_COLYSEUS_URL=http://localhost:2567` if needed.
 
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)
@@ -49,7 +81,9 @@ Hold the mouse to fire the auto rifles. Each gun still uses its own Supabase dam
 | `lib/game/visuals/appearance.js` | circle / rect **or** sprite from `icon_url` |
 | `lib/game/data/weaponRepository.js` | loads `public.weapons` from Supabase, local fallback |
 | `lib/game/data/localWeapons.js` | same shape as the `weapons` table |
-| `lib/game/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys |
+| `lib/game/config.js` | canvas, player, per-type gun visuals, publishable Supabase keys, Colyseus URL |
+| `lib/game/net/colyseusClient.js` | joins `my_room` from the Next.js client |
+| `server/` | Colyseus JavaScript ESM multiplayer server |
 
 Gameplay records match the Supabase `weapons` columns (`id`, `name`, `weapon_type`, `base_damage`, `icon_url`, …). Extra look-and-feel (barrel size, colors) lives in `WEAPON_VISUALS_BY_TYPE` until you add columns or sprites.
 

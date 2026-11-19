@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ColyseusStatus from "./ColyseusStatus";
 import P5Stage from "./P5Stage";
 import { buildLoadout, MAX_UTILITIES } from "../lib/game/data/loadout.js";
 import { RANGE_BOUNDS } from "../lib/game/world/range.js";
@@ -12,7 +13,7 @@ const COLUMNS = [
   ["utility", "utilities"],
 ];
 
-export default function LoadoutMenu({ catalog, onReady }) {
+export default function LoadoutMenu({ catalog, onReady, colyseusLabel = "—" }) {
   const options = useMemo(() => buildLoadout(catalog.weapons), [catalog]);
   const [primaryId, setPrimaryId] = useState(options.primary[0]?.id ?? null);
   const [secondaryId, setSecondaryId] = useState(options.secondary[0]?.id ?? null);
@@ -86,7 +87,8 @@ export default function LoadoutMenu({ catalog, onReady }) {
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <ColyseusStatus label={colyseusLabel} variant="light" />
           <button
             type="button"
             disabled={!ready}
