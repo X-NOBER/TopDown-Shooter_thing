@@ -10,7 +10,7 @@ import {
 /**
  * Import your Room files
  */
-import { MyRoom } from "./rooms/MyRoom.js";
+import { ArenaRoom } from "./rooms/ArenaRoom.js";
 
 const server = defineServer({
 
@@ -18,7 +18,8 @@ const server = defineServer({
    * Define your room handlers:
    */
   rooms: {
-    my_room: defineRoom(MyRoom),
+    arena: defineRoom(ArenaRoom).filterBy(["open"]),
+    my_room: defineRoom(ArenaRoom).filterBy(["open"]),
   },
 
   /**

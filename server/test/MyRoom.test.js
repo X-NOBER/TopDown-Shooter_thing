@@ -3,7 +3,7 @@ import { boot } from "@colyseus/testing";
 
 import appConfig from "../src/app.config.js";
 
-describe("testing your Colyseus app", () => {
+describe("arena matchmaking", () => {
   let colyseus;
 
   before(async () => colyseus = await boot(appConfig));
@@ -13,16 +13,21 @@ describe("testing your Colyseus app", () => {
     await colyseus.cleanup();
   });
 
-  it("connecting into a room", async () => {
-    // `room` is the server-side Room instance reference.
-    const room = await colyseus.createRoom("my_room", {});
-
-    // `client1` is the client-side `Room` instance reference (same as JavaScript SDK)
+  it("waits with one player, then starts the same fight when the second joins", async () => {
+    const room = await colyseus.createRoom("arena", {});
     const client1 = await colyseus.connectTo(room);
 
-    // make your assertions
-    assert.strictEqual(client1.sessionId, room.clients[0].sessionId);
+    assert.strictEqual(client1.state.phase, "waiting");
+    assert.strictEqual(client1.state.needed, 2);
+    assert.strictEqual(client1.state.max, 6);
+    assert.strictEqual(Object.keys(client1.state.players.toJSON()).length, 1);
 
-    assert.deepStrictEqual(client1.state.toJSON(), { mySynchronizedProperty: "Hello world" });
+    const client2 = await colyseus.connectTo(room);
+    await client1.waitForNextPatch();
+
+    assert.strictEqual(client1.state.phase, "fighting");
+    assert.strictEqual(client2.state.phase, "fighting");
+    assert.strictEqual(Object.keys(client1.state.players.toJSON()).length, 2);
+    assert.strictEqual(client1.sessionId, room.clients[0].sessionId);
   });
 });

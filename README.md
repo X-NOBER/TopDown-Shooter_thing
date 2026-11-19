@@ -22,7 +22,9 @@ npm run server
 - Playground: `http://localhost:2567`
 - Monitor: `http://localhost:2567/monitor`
 
-The loadout HUD and match HUD show `connected · sessionId`. If the server is down, the shooter still runs locally.
+**2–6 players:** pick a loadout in the lobby (PlayGround is practice only). **Ready** queues you into a waiting room (up to 6 in one match). The fight starts once **at least 2** are in; more can join the **same arena** until the room is full. Die and you **respawn** on your side.
+
+The loadout HUD shows `online · lobby`. After Ready it shows waiting/fight. If the server is down, Ready will fail instead of starting a local match.
 
 - **WASD** or arrow keys — move
 - **Mouse** — aim (weapon stays on the player and points at the cursor)

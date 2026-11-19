@@ -5,11 +5,12 @@ import { useEffect, useRef } from "react";
 /**
  * Mounts one p5 sketch. Loadout changes update the running game instead of remounting.
  */
-export default function P5Stage({ catalog, mode = "match", loadout, heldId = null, bounds, className }) {
+export default function P5Stage({ catalog, mode = "match", loadout, heldId = null, bounds, className, net = null }) {
   const holderRef = useRef(null);
-  const apiRef = useRef({ game: null, latestLoadout: loadout, latestHeldId: heldId });
+  const apiRef = useRef({ game: null, latestLoadout: loadout, latestHeldId: heldId, net });
   apiRef.current.latestLoadout = loadout;
   apiRef.current.latestHeldId = heldId;
+  apiRef.current.net = net;
 
   useEffect(() => {
     const holder = holderRef.current;
@@ -44,6 +45,10 @@ export default function P5Stage({ catalog, mode = "match", loadout, heldId = nul
   useEffect(() => {
     apiRef.current.game?.setLoadout(loadout, heldId);
   }, [loadout, heldId]);
+
+  useEffect(() => {
+    apiRef.current.game?.bindNet(net);
+  }, [net]);
 
   return <div ref={holderRef} className={className} />;
 }

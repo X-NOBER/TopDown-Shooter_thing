@@ -1,7 +1,1 @@
-import { schema, t } from "@colyseus/schema";
-
-export const MyRoomState = schema({
-
-  mySynchronizedProperty: t.string().default("Hello world"),
-
-});
+export { ArenaState as MyRoomState, Fighter } from "./ArenaState.js";
